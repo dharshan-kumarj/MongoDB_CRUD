@@ -1,6 +1,10 @@
 package com.urk23ai1150.mongodb;
 
 import com.mongodb.client.*;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
+
 import org.bson.Document;
 
 public class MongoDBConnection {
@@ -35,31 +39,31 @@ public class MongoDBConnection {
         }
     }
 
-    public void insertStudents() {
-        try {
-            System.out.println("\n=== Inserting Students ===");
+    // public void insertStudents() {
+    //     try {
+    //         System.out.println("\n=== Inserting Students ===");
 
-            // Create three student documents
-            Student student1 = new Student("URK23AI1150", "Dharshan Kumar J", 19, "B.Tech AI & DS");
-            Student student2 = new Student("URK23AI1152", "Danish Prabhu K V", 19, "B.Tech AI & DS");
-            Student student3 = new Student("URK23AI1153", "Arun L K", 20, "B.Tech AI & DS");
+    //         // Create three student documents
+    //         Student student1 = new Student("URK23AI1150", "Dharshan Kumar J", 19, "B.Tech AI & DS");
+    //         Student student2 = new Student("URK23AI1152", "Danish Prabhu K V", 19, "B.Tech AI & DS");
+    //         Student student3 = new Student("URK23AI1153", "Arun L K", 20, "B.Tech AI & DS");
 
-            // Insert the documents
-            collection.insertOne(student1.toDocument());
-            System.out.println("✓ Inserted student: URK23AI1150");
+    //         // Insert the documents
+    //         collection.insertOne(student1.toDocument());
+    //         System.out.println("✓ Inserted student: URK23AI1150");
             
-            collection.insertOne(student2.toDocument());
-            System.out.println("✓ Inserted student: URK23AI1152");
+    //         collection.insertOne(student2.toDocument());
+    //         System.out.println("✓ Inserted student: URK23AI1152");
             
-            collection.insertOne(student3.toDocument());
-            System.out.println("✓ Inserted student: URK23AI1153");
+    //         collection.insertOne(student3.toDocument());
+    //         System.out.println("✓ Inserted student: URK23AI1153");
 
-            System.out.println("All students inserted successfully!");
+    //         System.out.println("All students inserted successfully!");
             
-        } catch (Exception e) {
-            System.err.println("Error inserting documents: " + e.getMessage());
-        }
-    }
+    //     } catch (Exception e) {
+    //         System.err.println("Error inserting documents: " + e.getMessage());
+    //     }
+    // }
 
     public void readAllStudents() {
         try {
@@ -87,6 +91,31 @@ public class MongoDBConnection {
             System.err.println("Error reading documents: " + e.getMessage());
         }
     }
+
+     public void updateStudentAge(String regNo, int newAge) {
+        try {
+            // System.out.println("\n=== Updating Student Age ===");
+            // System.out.println("Updating age for Register Number: " + regNo);
+
+            // Create the update operation
+            Document result = collection.findOneAndUpdate(
+                eq("registerNumber", regNo),  // filter by register number
+                set("age", newAge)           // set new age
+            );
+
+            if (result != null) {
+                System.out.println("✓ Successfully updated student age");
+                System.out.println("Old age: " + result.getInteger("age"));
+                System.out.println("New age: " + newAge);
+            } else {
+                System.out.println("× No student found with Register Number: " + regNo);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error updating student age: " + e.getMessage());
+        }
+    }
+
 
     public void close() {
         if (mongoClient != null) {
