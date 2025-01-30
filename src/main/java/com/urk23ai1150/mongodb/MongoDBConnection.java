@@ -1,6 +1,7 @@
 package com.urk23ai1150.mongodb;
 
 import com.mongodb.client.*;
+import com.mongodb.client.result.DeleteResult;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
@@ -113,6 +114,35 @@ public class MongoDBConnection {
             
         } catch (Exception e) {
             System.err.println("Error updating student age: " + e.getMessage());
+        }
+    }
+
+     public void deleteStudent(String regNo) {
+        try {
+            System.out.println("\n=== Deleting Student ===");
+            System.out.println("Attempting to delete student with Register Number: " + regNo);
+            
+            // Find the student first to show their details
+            Document studentDoc = collection.find(eq("registerNumber", regNo)).first();
+            if (studentDoc != null) {
+                System.out.println("\nDeleting student with details:");
+                System.out.println("Register Number: " + studentDoc.getString("registerNumber"));
+                System.out.println("Name: " + studentDoc.getString("name"));
+                System.out.println("Age: " + studentDoc.getInteger("age"));
+                System.out.println("Course: " + studentDoc.getString("course"));
+            }
+
+            // Perform the delete operation
+            DeleteResult result = collection.deleteOne(eq("registerNumber", regNo));
+            
+            if (result.getDeletedCount() > 0) {
+                System.out.println("\n✓ Student successfully deleted");
+            } else {
+                System.out.println("\n× No student found with Register Number: " + regNo);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error deleting student: " + e.getMessage());
         }
     }
 
