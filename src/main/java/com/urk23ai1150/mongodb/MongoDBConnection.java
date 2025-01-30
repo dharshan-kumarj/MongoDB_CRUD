@@ -1,12 +1,12 @@
 package com.urk23ai1150.mongodb;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
+import org.bson.Document;
 
 public class MongoDBConnection {
     private MongoClient mongoClient;
     private MongoDatabase database;
+    private MongoCollection<Document> collection;
 
     public void connect() {
         try {
@@ -24,14 +24,67 @@ public class MongoDBConnection {
             
             // Create a collection
             String collectionName = "students";
-            database.createCollection(collectionName);
-            System.out.println("✓ Collection '" + collectionName + "' created successfully");
+            collection = database.getCollection(collectionName);
+            System.out.println("✓ Collection '" + collectionName + "' accessed successfully");
             
             System.out.println("\nConnection Setup Complete!");
             System.out.println("================================");
             
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void insertStudents() {
+        try {
+            System.out.println("\n=== Inserting Students ===");
+
+            // Create three student documents
+            Student student1 = new Student("URK23AI1150", "Dharshan Kumar J", 19, "B.Tech AI & DS");
+            Student student2 = new Student("URK23AI1152", "Danish Prabhu K V", 19, "B.Tech AI & DS");
+            Student student3 = new Student("URK23AI1153", "Arun L K", 20, "B.Tech AI & DS");
+
+            // Insert the documents
+            collection.insertOne(student1.toDocument());
+            System.out.println("✓ Inserted student: URK23AI1150");
+            
+            collection.insertOne(student2.toDocument());
+            System.out.println("✓ Inserted student: URK23AI1152");
+            
+            collection.insertOne(student3.toDocument());
+            System.out.println("✓ Inserted student: URK23AI1153");
+
+            System.out.println("All students inserted successfully!");
+            
+        } catch (Exception e) {
+            System.err.println("Error inserting documents: " + e.getMessage());
+        }
+    }
+
+    public void readAllStudents() {
+        try {
+            System.out.println("\n=== Reading All Students ===");
+            
+            FindIterable<Document> documents = collection.find();
+            int count = 0;
+
+            for (Document doc : documents) {
+                count++;
+                System.out.println("\nStudent #" + count + ":");
+                System.out.println("Register Number: " + doc.getString("registerNumber"));
+                System.out.println("Name: " + doc.getString("name"));
+                System.out.println("Age: " + doc.getInteger("age"));
+                System.out.println("Course: " + doc.getString("course"));
+            }
+
+            if (count == 0) {
+                System.out.println("No students found in the database.");
+            } else {
+                System.out.println("\nTotal number of students: " + count);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error reading documents: " + e.getMessage());
         }
     }
 

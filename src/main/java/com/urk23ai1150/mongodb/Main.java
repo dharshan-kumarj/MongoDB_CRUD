@@ -2,17 +2,19 @@ package com.urk23ai1150.mongodb;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("MongoDB Connection Demo");
-
+        System.out.println("MongoDB Insert and Read Demo");
         
         MongoDBConnection mongodb = new MongoDBConnection();
         
         try {
-            // Connect to MongoDB and create database
+            // Connect to MongoDB
             mongodb.connect();
             
-            // Wait for 2 seconds to see the results
-            Thread.sleep(2000);
+            // Insert three students
+            mongodb.insertStudents();
+            
+            // Read all students
+            mongodb.readAllStudents();
             
         } catch (Exception e) {
             System.err.println("Main error: " + e.getMessage());
